@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="sk">
 <head>
-    <charset="UTF-8">
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Vianočný odpočet</title>
-    <!-- Google Fonts pre pekný štýl písma ako na predlohe -->
+    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Mountains+of+Christmas:wght@700&family=Open+Sans:wght@400;700&display=swap" rel="stylesheet">
     <style>
         * {
@@ -14,9 +14,8 @@
         }
 
         body {
-            /* Vianočné zimné pozadie (možnosť zmeniť na vlastný obrázok, tu je pekný Unsplash zimný motív) */
-            background: url('https://images.unsplash.com/photo-1543589077-47d81606c1bf?q=80&w=1920&auto=format&fit=crop') no-repeat center center fixed;
-            background-size: cover;
+            /* Sýte vianočné tmavozelenomodré pozadie */
+            background: linear-gradient(135deg, #062017 0%, #0c3b2e 50%, #03150e 100%);
             font-family: 'Open Sans', sans-serif;
             height: 100vh;
             display: flex;
@@ -25,15 +24,38 @@
             align-items: center;
             color: white;
             position: relative;
+            overflow: hidden;
         }
 
-        /* Tmavý filter cez pozadie, aby bolo všetko čitateľné */
-        body::before {
-            content: '';
+        /* Generovanie sneženia pomocou CSS */
+        .snow-container {
             position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.35);
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
             z-index: 1;
+        }
+
+        .snowflake {
+            position: absolute;
+            background: #ffffff;
+            border-radius: 50%;
+            opacity: 0.8;
+            animation: fall linear infinite;
+        }
+
+        @keyframes fall {
+            0% {
+                transform: translateY(-10px) translateX(0);
+            }
+            50% {
+                transform: translateY(50vh) translateX(20px);
+            }
+            100% {
+                transform: translateY(105vh) translateX(-20px);
+            }
         }
 
         .container {
@@ -53,16 +75,17 @@
             text-shadow: 2px 2px 8px rgba(0,0,0,0.6);
         }
 
-        /* Priesvitný tmavý box presne ako na obrázku */
+        /* Priesvitný tmavý box */
         .countdown-box {
-            background: rgba(30, 41, 59, 0.75);
-            backdrop-filter: blur(5px);
-            border-radius: 4px;
+            background: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
             display: flex;
             justify-content: space-around;
             align-items: center;
             padding: 40px 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.6);
         }
 
         .time-segment {
@@ -80,7 +103,7 @@
             text-shadow: 2px 2px 4px rgba(0,0,0,0.4);
         }
 
-        /* Sekundy v ružovej farbe presne podla predlohy */
+        /* Sekundy v ružovej farbe */
         .time-segment.seconds .time-value {
             color: #f43f5e; 
         }
@@ -104,59 +127,50 @@
 </head>
 <body>
 
+    <!-- Snehové vločky -->
+    <div class="snow-container" id="snowContainer"></div>
+
     <div class="container">
-        <h1>Christmas Countdown</h1>
+        <h1>Odpočet do Vianočnej dovolenky</h1>
         
         <div class="countdown-box">
             <div class="time-segment">
                 <div class="time-value" id="days">00</div>
-                <div class="time-label">Days</div>
+                <div class="time-label">dní</div>
             </div>
             <div class="time-segment">
                 <div class="time-value" id="hours">00</div>
-                <div class="time-label">Hours</div>
+                <div class="time-label">hodín</div>
             </div>
             <div class="time-segment">
                 <div class="time-value" id="minutes">00</div>
-                <div class="time-label">Minutes</div>
+                <div class="time-label">minút</div>
             </div>
             <div class="time-segment seconds">
                 <div class="time-value" id="seconds">00</div>
-                <div class="time-label">Seconds</div>
+                <div class="time-label">sekúnd</div>
             </div>
         </div>
     </div>
 
     <script>
-        // Cielový dátum: 22. december 2026, 16:00:00
-        const targetDate = new Date("December 22, 2026 16:00:00").getTime();
+        // Skript na generovanie snehových vločiek
+        const snowContainer = document.getElementById('snowContainer');
+        const numberOfSnowflakes = 50;
 
-        function updateCountdown() {
-            const now = new Date().getTime();
-            const difference = targetDate - now;
-
-            if (difference < 0) {
-                document.getElementById("days").innerText = "00";
-                document.getElementById("hours").innerText = "00";
-                document.getElementById("minutes").innerText = "00";
-                document.getElementById("seconds").innerText = "00";
-                return;
-            }
-
-            const days = Math.floor(difference / (1000 * 60 * 60 * 24));
-            const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
-            const seconds = Math.floor((difference % (1000 * 60)) / 1000);
-
-            // Pridanie nuly na začiatok, ak je číslo jednociferné
-            document.getElementById("days").innerText = String(days).padStart(2, '0');
-            document.getElementById("hours").innerText = String(hours).padStart(2, '0');
-            document.getElementById("minutes").innerText = String(minutes).padStart(2, '0');
-            document.getElementById("seconds").innerText = String(seconds).padStart(2, '0');
+        for (let i = 0; i < numberOfSnowflakes; i++) {
+            const snowflake = document.createElement('div');
+            snowflake.classList.add('snowflake');
+            
+            // Náhodná veľkosť, pozícia a rýchlosť padania
+            const size = Math.random() * 4 + 2 + 'px';
+            snowflake.style.width = size;
+            snowflake.style.height = size;
+            snowflake.style.left = Math.random() * 100 + 'vw';
+            snowflake.style.animationDuration = Math.random() * 5 + 3 + 's';
+            snowflake.style.animationDelay = Math.random() * 5 + 's';
+            
+            snowContainer.appendChild(snowflake);
         }
 
-        setInterval(updateCountdown, 1000);
-        updateCountdown();
-    </script>
-</body>
-</html>
+        // Cielový dátum: 22. december 2026, 16:00:00
